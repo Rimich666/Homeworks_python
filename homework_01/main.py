@@ -55,7 +55,7 @@ def prime(input_list):
     max_numb = max(input_list)
     hi_div = math.ceil(math.sqrt(max_numb)) + 1
     list_div = create_list_divisors(hi_div)
-    output_list = []
+    output_list = [1, ]
     for i in input_list:
         if is_prime(i, list_div):
             output_list.append(i)
@@ -80,6 +80,7 @@ print(f"Список квадратов: {list_power}")
 max_number = 100000
 num_count = 1500
 list_int = [random.randint(1, max_number) for _ in range(0, num_count)]
+list_int.append(1)
 print(f"Исходный список: {list_int}")
 
 list_odd = filter_numbers(list_int, ODD)
