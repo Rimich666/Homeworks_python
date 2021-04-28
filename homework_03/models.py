@@ -17,10 +17,10 @@ from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy import Column, Integer, String, ForeignKey, create_engine
 import os
 
-PG_CONN_URI = os.environ.get("PG_CONN_URI") or "postgresql://postgres:password@localhost/postgres"
-pg_conn_uri_async = 'postgresql+asyncpg' + PG_CONN_URI[PG_CONN_URI.find('://'):]
+PG_CONN_URI = os.environ.get("SQLALCHEMY_PG_CONN_URI") or "postgresql+asyncpg://postgres:password@localhost/postgres"
+# pg_conn_uri_async = 'postgresql+asyncpg' + PG_CONN_URI[PG_CONN_URI.find('://'):]
 
-engine = create_async_engine(pg_conn_uri_async, echo=False)
+engine = create_async_engine(PG_CONN_URI, echo=False)
 Base = declarative_base()
 Session = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 
