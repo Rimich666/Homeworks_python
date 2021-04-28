@@ -22,10 +22,7 @@ pg_conn_uri_async = 'postgresql+asyncpg' + PG_CONN_URI[PG_CONN_URI.find('://'):]
 
 engine = create_async_engine(pg_conn_uri_async, echo=False)
 Base = declarative_base()
-ASession = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
-
-sengine = create_engine(PG_CONN_URI)
-Session = sessionmaker(bind=sengine)
+Session = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 
 
 class User(Base):
@@ -48,6 +45,8 @@ class User(Base):
     def __str__(self):
         return f"User: \n\t.name: {self.name}\n\t.username: {self.username}\n\t.email: " \
                f"{self.email}\n\t.phone: {self.phone}\n\t.website: {self.website}"
+
+    posts = relationship("Post", back_populates="user")
 
     async def to_base(self, sess):
         res = await sess.execute(select(User).where(User.id == self.id))
@@ -86,8 +85,6 @@ class Post(Base):
             print(f"In the 'Post' table, there is already a row with id = {self.id}")
 
 
-User.posts = relationship("Post", order_by=Post.id, back_populates="user")
-
 if __name__ == "__main__":
     #    print(sqlalchemy.__file__)
     print(asyncpg.__file__)
@@ -98,7 +95,7 @@ if __name__ == "__main__":
 
 
     async def to_base(user):
-        async with ASession(future=True) as session:
+        async with Session(future=True) as session:
             await user.to_base(session)
             await session.commit()
 

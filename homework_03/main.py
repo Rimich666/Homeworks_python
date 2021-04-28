@@ -15,14 +15,15 @@ import aiohttp
 
 from jsonplaceholder_requests import get_users, get_posts
 
-from models import Base, ASession, User, Post, engine
+from models import Base, Session, User, Post, engine
 
 
-async def request():
+async def async_main():
     async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
     async with aiohttp.ClientSession() as session:
-        async with ASession(future=True) as session_psql:
+        async with Session(future=True) as session_psql:
             for user in await get_users(session):
                 await User(user).to_base(session_psql)
                 for post in await get_posts(session, user['id']):
@@ -31,8 +32,9 @@ async def request():
 
 
 def main():
+    # asyncio.run(async_main())
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(request())
+    loop.run_until_complete(async_main())
 
 
 if __name__ == "__main__":
