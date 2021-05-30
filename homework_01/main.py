@@ -55,9 +55,9 @@ def prime(input_list):
     max_numb = max(input_list)
     hi_div = math.ceil(math.sqrt(max_numb)) + 1
     list_div = create_list_divisors(hi_div)
-    output_list = [1, ]
+    output_list = []
     for i in input_list:
-        if is_prime(i, list_div):
+        if is_prime(i, list_div) or i == 1:
             output_list.append(i)
     return output_list
 

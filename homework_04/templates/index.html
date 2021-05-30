@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Homework #4
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+    {% if home=='Home' %}
+        <div class="col-md-2">
+    {% else %}
+        <div class="col-md-1" style="width: 30em">
+    {% endif %}
+        <h1>Домашнее задание №4</h1>
+        <h4>Первое веб-приложение</h4>
+        <div class="badge bg-primary text-wrap" style="width: 30rem;">
+            создайте базовое приложение на Flask
+            создайте index view /
+            добавьте страницу /about/, добавьте туда текст
+            создайте базовый шаблон (используйте https://getbootstrap.com/docs/5.0/getting-started/introduction/#starter-template)
+            в базовый шаблон подключите статику Bootstrap 5 и добавьте стили, примените их
+            в базовый шаблон добавьте навигационную панель nav (https://getbootstrap.com/docs/5.0/components/navbar/)
+            в навигационную панель добавьте ссылки на главную страницу / и на страницу /about/ при помощи url_for
+        </div>
+    </div>
+    {% if home=='Home' %}
+    <div class="col-md-2">
+        <img src="https://i.pinimg.com/originals/28/32/0b/28320b1915f7049a2694c0e9ec8534cb.jpg" style="width: 16rem; height: 13rem">
+    </div>
+    {% endif %}
+    </div>
+{% endblock %}
