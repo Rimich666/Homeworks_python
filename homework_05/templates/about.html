@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    whom
+{% endblock %}
+
+{% block body %}
+    <h3>{{ 'About ' + whom }}</h3>
+    {% if whom=='Lenin' %}
+        <div class="card" style="width: 18rem;">
+            <img src="https://pbs.twimg.com/media/CgmSat1WsAElDtZ.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Ленин</h5>
+                <p class="card-text" class="text-justify">Когда Ильич был маленький,<br>
+                                        С кудрявой головой,<br>
+                                        То притворялся валенком,<br>
+                                        Но был уже крутой.
+                </p>
+            </div>
+        </div>
+    {% elif whom == 'Pushkin' %}
+        <div class="card" style="width: 18rem;">
+            <img src="https://upload.wikimedia.org/wikipedia/de/b/b6/Pushkin_Saint_Petersburg.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">А.С. Пушкин</h5>
+                <p class="card-text" class="text-justify">У Лукоморья дуб срубили<br>
+                                                            Златую цепь в музей снесли<br>
+                                                            Кота в зверятник запустили<br>
+                                                            Русалку в бочку посадили<br>
+                                                            И написали «Огурцы»
+                </p>
+            </div>
+        </div>
+    {% elif whom == 'Vasya' %}
+        <div class="card" style="width: 18rem;">
+            <img src="https://regnum.ru/uploads/pictures/news/2016/05/27/regnum_picture_1464359720120498_normal.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Вася Куролесов</h5>
+                <p class="card-text" class="text-justify">Вместе со своей мамой Евлампьевной жил Вася в деревне Сычи. Мама Евлампьевна держала кур с петухом и уток, а Вася учился на механизатора.
+                </p>
+            </div>
+        </div>
+    {% else %}
+        <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+            <div class="card-header">Домашнее задание №4</div>
+            <div class="card-body">
+                <h5 class="card-title">Первое веб-приложение</h5>
+                <p class="card-text">Это Flask приложение. Создано две(почти две) страницы.
+                    Всё отбутстрапленно с использованием базового шаблона.
+                Навбар использован. Все итемы навбара рабочие. Ничего не пропало зря.</p>
+            </div>
+        </div>
+    {% endif %}
+
+
+
+
+{% endblock %}
