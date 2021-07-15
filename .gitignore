@@ -141,3 +141,8 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 /Homework_02/main.py
+tests/
+/Homework_06/web-app/commands.py
+/Homework_06/web-app/README.rst
+*.bak
+pg-data/
