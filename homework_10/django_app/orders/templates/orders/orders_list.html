@@ -1,0 +1,16 @@
+{% extends "orders/index.html" %}
+{% block title %}
+    Список заказов
+{% endblock %}
+
+{% block body %}
+    <h1>Список заказов</h1>
+    <ul class="list-group">
+        {% for item in object_list %}
+            <li class="list-group-item">
+                {{ item }}
+                <a class="btn btn-outline-info" href="/orders/detail/{{ item.pk }}" role="button">Детали</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
