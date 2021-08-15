@@ -1,0 +1,4 @@
+{% for shop in shops %}
+    <button type="button" data-bs-dismiss="modal" class="list-group-item list-group-item-action"
+            onclick="shop_click(id)" id="{{ shop.id }}">{{ shop.shop_name }}</button>
+{% endfor %}

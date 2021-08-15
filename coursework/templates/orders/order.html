@@ -1,0 +1,31 @@
+{% extends 'orders/base.html' %}
+{% block content %}
+    <table class="table caption-top">
+        <caption>
+            Заказ № {{ order.num }} от {{ order.data }}<br>
+            Покупатель: {{ order.buyer.buyer_name }}<br>
+            Магазин: {{ order.shop.shop_name }}<br>
+            Сумма {{ order.sum }}<br>
+            Автор: {{ order.user.username }}</caption>
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Наименование</th>
+                <th>Количество</th>
+                <th>Цена</th>
+                <th>Сумма</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for prod in order.orders_products %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ prod.product.product_name }}</td>
+                    <td>{{ prod.quantity }}</td>
+                    <td>{{ prod.price }}</td>
+                    <td>{{ prod.sum }}</td>
+                 </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

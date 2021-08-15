@@ -1,0 +1,27 @@
+<div class="container-fluid" id="form_table_container">
+{% if len > 0 %}
+<table class="table table-bordered table-sm" id="table_product">
+    <thead class="table-secondary">
+    <tr>
+        <th>Наименование</th>
+        <th>Кол-во</th>
+        <th>Цена</th>
+        <th>Сумма</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for row in rows %}
+        <tr data-row_name="{{ row.name }}" data-id="{{ row.prod.id }}">
+            <td>{{ row.prod.product_name }}</td>
+            <td>
+                <input class="form-control use-keyboard-input_table" value="{{ row.val }}" style="border-width: 0" id="product_{{ row.prod.id }}">
+            </td>
+            <td>{{ row.price_val }}</td>
+            <td id="sum_{{ row.prod.id }}">{{ row.sum }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+</div>
+

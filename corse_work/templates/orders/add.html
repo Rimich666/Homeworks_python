@@ -1,0 +1,335 @@
+{% extends 'orders/base.html' %}
+{% block title %}
+    Новый заказ
+{% endblock %}
+{% block meta %}
+
+{% endblock %}
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Keyboard.css') }}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+{% endblock %}
+{% block navbar_text %}{{ param['user'].username }}: Создание заказа{% endblock %}
+{% block navbar_buttons %}
+    <a href="{{ url_for('orders_app.new') }}" class="btn btn-danger material-icons" title="Очистить"
+                           type="button">clear</a>
+    <button id="nav-order_submit" class="btn btn-primary material-icons" type="button" title="Записать">save</button>
+{% endblock %}
+{% block content %}
+    {% set buyers = param['buyers'] %}
+    {% set shops = param['shops'] %}
+    {% set products = param['products'] %}
+    <!-- Модальное окно 'Выбор покупателя'-->
+    <div class="modal fade" id="buyerModal" tabindex="-1" aria-labelledby="SelectBuyerModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="SelectBuyerModal">Выбор покупателя</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="list-group " id="buyer_list">
+                        {% for buyer in buyers %}
+                            <button type="button" class="list-group-item list-group-item-action"
+                                    data-bs-dismiss="modal" id="{{ buyer.id }}">{{ buyer.buyer_name }}</button>
+                        {% endfor %}
+                    </div>
+                </div>
+             </div>
+        </div>
+    </div>
+    <!-- Модальное окно 'Выбор магазина'-->
+    <div class="modal fade" id="shopModal" tabindex="-1" aria-labelledby="SelectShopModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="SelectShopModal">Выбор магазина</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="list-group " id="shop_list">
+                        {% include 'orders/shops.html' %}
+                    </div>
+                </div>
+             </div>
+        </div>
+    </div>
+    <!-- Модальное окно 'Подбор товара'-->
+    <script src="{{ url_for('static', filename='js/Keyboard.js') }}"></script>
+    <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="SelectProductModal" data-bs-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="SelectProductModal">Подбор товара</h5>
+                    <button id="close_product_form" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="accordion" id="accordionProduct">
+                        {% for product in products %}
+                            <div class="accordion-item">
+                                <h5 class="accordion-header" id="heading{{ loop.index }}">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}"
+                                            id="accordion_button{{ loop.index }}" aria-expanded="true" aria-controls="collapseOne">
+                                        {{ product.product_name }}
+                                    </button>
+                                </h5>
+
+                                <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" aria-labelledby="heading{{ loop.index }}" data-bs-parent="#accordionProduct">
+                                    <div class="accordion-body">
+                                        <div class="input-group">
+                                            <label class="input-group-text" for="in_q_{{ product.id }}">Количество</label>
+                                            <input class="use-keyboard-input form-control" autocomplete="off" data-id_button="accordion_button{{ loop.index }}"
+                                                   id="in_q_{{ product.id }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+             </div>
+        </div>
+    </div>
+    <div class="container" id="form_container">
+        <div class="row mt-3">
+            <div class="col-md-7 col-lg-8">
+                <nav class="navbar navbar-light bg-light">
+                    <div class="container-fluid">
+                        <span class="navbar-text">
+                            {{ param['user'].username }}: Создание заказа
+                        </span>
+                        <div>
+                            <a href="{{ url_for('orders_app.new') }}" class="btn btn-danger material-icons" title="Очистить"
+                                       type="button">clear</a>
+                            <button id="nav-order_submit" class="btn btn-primary material-icons" type="button" title="Записать">save</button>
+                            <a href="{{ url_for('orders_app.orders') }}" class="btn btn-secondary material-icons" title="К списку"
+                                       type="button">reply</a>
+                            <a href="{{ url_for('login_app.logout') }}" class="btn btn-secondary material-icons" title="Выход"
+                                       type="button">logout</a>
+                        </div>
+                    </div>
+                </nav>
+                <div class="mt-3">
+                    <form action="" method="post" novalidate>
+                        <div class="input-group has-validation mb-3">
+                            <span class="input-group-text" id="buyer_id">0</span>
+                            <input size=100 class="form-control" placeholder="Покупатель" id='input_buyer' data-id="{{ buyer_id }}">
+                            <button class="btn btn-primary material-icons" type="button" data-bs-toggle="modal"
+                                    title="Выбрать покупателя" data-bs-target="#buyerModal">more_horiz</button>
+                        </div>
+                        <div class="input-group has-validation mb-3">
+                            <span class="input-group-text" id="shop_id">0</span>
+                            <input size=100 placeholder="Магазин" class="form-control" id='input_shop' data-id="{{ shop_id }}">
+                            <button class="btn btn-primary material-icons" type="button" data-bs-toggle="modal"
+                                    title="Выбрать магазин" data-bs-target="#shopModal">more_horiz</button>
+                        </div>
+                        <div class="navbar navbar-light bg-light" role="navigation">
+                            <div class="container-fluid">
+                                <span class="navbar-text">Список товаров</span>
+                                <div>
+                                    <button class="btn btn-primary material-icons" type="button" id="del_row_button"
+                                            title="Удалить строку">delete</button>
+                                    <button class="btn btn-primary material-icons" type="button" data-bs-toggle="modal"
+                                            data-bs-target="#productModal" title="Подбор товара">local_grocery_store</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container-fluid" id="form_table_container">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let Keyboard_accordion = new Keyboard();
+        Keyboard_accordion.properties.parent_id = "productModal";
+        Keyboard_accordion.properties.key_done = 'add_shopping_cart';
+        Keyboard_accordion.properties.id_done = "add_shopping_button";
+        Keyboard_accordion.init();
+        let Keyboard_table = new Keyboard();
+        Keyboard_table.properties.parent_id = "form_container";
+        Keyboard_table.properties.input_class = '.use-keyboard-input_table';
+        Keyboard_table.properties.key_done = 'done';
+        Keyboard_table.properties.id_done = 'change_shopping_button';
+        Keyboard_table.init();
+        $('#change_shopping_button').on('click', function(){done_click()});
+        $('#add_shopping_button').on('click', function () {
+            let id_inp = Keyboard_accordion.properties.element_id;
+            let elem = document.getElementById(id_inp);
+            let quant = elem.value
+            if (quant === ""||quant === "0"){return;}
+            let id_pr = id_inp.replace('in_q_', '');
+            let shop_id = document.getElementById('shop_id').innerText;
+            elem.value = 0;
+            let btn = document.getElementById(elem.getAttribute('data-id_button'));
+            let event = new Event('click');
+            btn.dispatchEvent(event);
+            let data = JSON.stringify({'shop_id': shop_id, 'product_id': id_pr, 'quantity': quant});
+            let url = "{{ url_for('orders_app.new') }}";
+            let xhr = new XMLHttpRequest();
+            Query_POST(xhr, url, data, 'product_select', function () {
+                if (xhr.readyState === 4 && xhr.status === 202){
+                    console.log(xhr.status);
+                    console.log(xhr.responseText);
+                }
+            })
+
+        })
+        $('#nav-order_submit').on('click', function (){
+            let url = "{{ url_for('orders_app.confirm', buyer_id='buyer_id', shop_id='shop_id') }}";
+            url = url.replace('buyer_id', $('#input_buyer').attr('data-id')).replace('shop_id',
+                $('#input_shop').attr('data-id'))
+            let xhr = new XMLHttpRequest();
+            Query_GET(xhr, url, function (){
+                if (xhr.status===200){
+                    window.location.replace(url)
+                }
+
+            });
+        })
+
+
+        $('#close_product_form').on('click',function (){
+            let url = "{{ url_for('orders_app.new') }}";
+            let data = JSON.stringify({});
+//            console.log(data)
+            let xhr = new XMLHttpRequest();
+            Query_POST(xhr, url, data, 'render_products',function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                        let str = xhr.responseText
+                        let fragment = createFragmentFromString(str);
+                        $("#form_table_container").replaceWith(fragment);
+                        table_script('Закрытие окна с аккордеоном')
+                    }
+                })
+            })
+
+
+        $('#del_row_button').on('click', function(){
+            let url = "{{ url_for('orders_app.new') }}"
+            let xhr = new XMLHttpRequest();
+            let data = JSON.stringify({'product_id': $('.table-active').attr('data-id')});
+            Keyboard_table.close();
+            Query_POST(xhr, url, data, 'delete_row', function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    let str = xhr.responseText
+                    let fragment = createFragmentFromString(str);
+                    $("#form_table_container").replaceWith(fragment);
+                    table_script('Удаление строки')
+                    }
+                })
+            })
+
+        function createFragmentFromString(str){
+            let template = document.createElement("template");
+            template.innerHTML = str;
+            return template.content;
+        }
+
+        function Query_GET(xhr, url, onload){
+            xhr.open('GET', url, true);
+            xhr.responseType = 'text';
+            xhr.onload = onload;
+            xhr.send(null);
+        }
+
+        function Query_POST(xhr, url, data, reason, onload){
+ //           console.log('POST: ' + url + '  ' + data);
+            xhr.open('POST', url, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader("Reason", reason);
+            xhr.responseType = 'text';
+            xhr.onreadystatechange = onload;
+            xhr.send(data);
+        }
+
+        const shop_click = function (id){
+            let url = "{{ url_for('orders_app.new') }}"
+            let xhr = new XMLHttpRequest();
+            let data = JSON.stringify({'shop_id': id});
+            Query_POST(xhr, url, data, 'shop_select', function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    let obj = JSON.parse(xhr.responseText);
+                    let inp_buy = $('#input_buyer');
+                    let inp_shop = $('#input_shop');
+                    inp_buy.attr('data-id', obj.buyer_id);
+                    inp_buy.attr('value', obj.buyer_name);
+                    document.getElementById('buyer_id').innerHTML = obj.buyer_id;
+                    inp_shop.attr('data-id', obj.shop_id);
+                    inp_shop.attr('value', obj.shop_name);
+                    document.getElementById('shop_id').innerHTML = obj.shop_id;
+                }
+            })
+        }
+
+
+        const buyer_click = function (id){
+            let url = "{{ url_for('orders_app.new') }}";
+            let xhr = new XMLHttpRequest();
+            let data = JSON.stringify({'buyer_id': id});
+            Query_POST(xhr, url, data, 'buyer_select', function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    let obj = JSON.parse(xhr.responseText);
+                    let str = obj.fragment;
+                    let fragment = createFragmentFromString(str);
+                    let inp_buy = $('#input_buyer');
+                    $("div#shop_list").replaceWith(fragment);
+                    inp_buy.attr('value', obj.buyer_id);
+                    inp_buy.attr('value', obj.buyer_name);
+                    document.getElementById('buyer_id').innerHTML = obj.buyer_id;
+                }
+            })
+        }
+        function table_script (str)
+        {
+            console.log(str)
+            console.log('script table')
+            Keyboard_table.link_elements();
+            console.log(typeof done_click);
+
+
+            $('#table_product>tbody>tr').on('click', function (){
+                $('.table-active').removeClass('table-active');
+                $(this).addClass("table-active");
+            })
+        }
+
+        let done_click = function () {
+            console.log(Keyboard_table.properties.element_id)
+            let id_inp = Keyboard_table.properties.element_id;
+            let quant = document.getElementById(id_inp).value
+            if (quant === ''){quant = 0}
+            let id_pr = id_inp.replace('product_', '');
+            let data = JSON.stringify({'product_id': id_pr, 'quantity': quant});
+            let url = "{{ url_for('orders_app.new') }}";
+            let xhr = new XMLHttpRequest();
+            Query_POST(xhr, url, data, 'product_change', function () {
+                if (xhr.readyState === 4 && xhr.status === 200){
+                    let obj = JSON.parse(xhr.responseText);
+                    if (obj.render){
+                        let str = obj.fragment;
+                        let fragment = createFragmentFromString(str);
+                        $("#form_table_container").replaceWith(fragment);
+                        table_script('Из таблицы');
+                    }
+                    else{
+                        document.getElementById(id_inp).value = obj.quantity;
+                        document.getElementById('sum_' + id_pr).innerHTML = obj.sum;
+                    }
+                    console.log(xhr.status);
+                }
+            })
+        }
+
+        $('#buyer_list>button.list-group-item').on('click', function (){
+            buyer_click($(this).attr('id'));
+        })
+
+    </script>
+{% endblock %}
+{% block script %}
+    <script>
+
+    </script>
+{% endblock %}
