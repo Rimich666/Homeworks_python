@@ -9,17 +9,18 @@ def make_test_data():
     with open("./dataJSON.json", "r", encoding='utf-8-sig') as read_file:
         data = json.load(read_file)
     for tbl in db.metadata.sorted_tables:
-#    for tb in data:
+        #    for tb in data:
         tb = tbl.name
         qt = QueryTable(tb)
         pk = qt.primary_key['constrained_columns']
-        for rec in data[tb]:
-            if len(pk) > 0:
-                st = {col: rec[col] for col in pk}
-            else:
-                st = rec
-            if qt.query(st) is None:
-                qt.add(rec)
+        if tb in data.keys():
+            for rec in data[tb]:
+                if len(pk) > 0:
+                    st = {col: rec[col] for col in pk}
+                else:
+                    st = rec
+                if qt.query(st) is None:
+                    qt.add(rec)
     try:
         db.session.commit()
     except IntegrityError:
