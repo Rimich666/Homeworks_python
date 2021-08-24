@@ -4,8 +4,6 @@ from wtforms import (
     IntegerField,
     DecimalField,
     DateTimeField,
-    SubmitField,
-    HiddenField
 )
 from wtforms.widgets import TextInput
 from wtforms.widgets.html5 import (
@@ -13,7 +11,9 @@ from wtforms.widgets.html5 import (
     DateTimeInput,
 
 )
-from wtforms.validators import InputRequired
+from wtforms.validators import (
+    InputRequired,
+)
 
 types_field = {'VARCHAR': {'ftype': StringField, 'widget': TextInput()},
                'INTEGER': {'ftype': IntegerField, 'widget': NumberInput()},
@@ -47,7 +47,7 @@ def create_add_form(Class):
 
 @create_add_form
 class AddDefault(FlaskForm):
-    #field_list = HiddenField(None)
+    # field_list = HiddenField(None)
     field_list = []
     # def __init__(self, field_list):
     #     self.field_list = ",".join(field_list)
@@ -56,7 +56,7 @@ class AddDefault(FlaskForm):
 
 
 class Templ:
-    add_form = AddDefault
+#    add_form = AddDefault
     add_templ = 'add_default'
     repr_templ = ''
     many_to_many = False

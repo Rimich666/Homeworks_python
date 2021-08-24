@@ -50,14 +50,78 @@ class Keyboard {
         // Automatically use keyboard for elements with .use-keyboard-input
         document.querySelectorAll(this.properties.input_class).forEach(element => {
              element.addEventListener("focus", () => {
-                let top = $(element).offset().top + $(element).outerHeight();
-                $(this.elements.main).offset({top: top, left: $(element).offset().left});
-                this.properties.element_id = element.id;
-                this.open(element.value, currentValue => {
+                 this.properties.element_id = element.id;
+                 let top = $(element).offset().top + $(element).outerHeight();
+                 $(this.elements.main).offset({top: top, left: $(element).offset().left});
+                 this.open(element.value, currentValue => {
                     element.value = currentValue;
                 });
             });
         });
+    }
+
+    resize(width){
+        let kbrd = $(this.elements.main);
+        let panels = $('.keyboard__keys');
+        let panel_l = $('.keyboard__keys--l');
+        let panel_r = $('.keyboard__keys--r');
+        let keys = $('.keyboard__key');
+        let keys0 = $('.keyboard__key--widest');
+        let keys_height = $('.keyboard__key--high')
+        let margin = Math.round(3/291*width);
+        if (margin === 0){margin = 1}
+        let border = 1;
+        let width_for_button = width - margin * 11 - 8 * border; // 11 маржинов и 8 бордюров
+        let key_width = Math.round(width_for_button/4);
+        let key_0_width = (key_width + margin + border) * 2;
+        let l_width = (key_width + (margin + border) * 2) * 3;
+        let r_width = key_width + 2 * border;
+        let key_height = Math.round(45/291*width);
+        let key_high_height = (key_height + margin + border) * 2;
+
+        let mrgdtr = String(margin) + 'px';
+
+        keys.width(key_width);
+        keys.height(key_height);
+        keys0.width(key_0_width);
+        keys_height.height(key_high_height);
+        keys.css('margin', mrgdtr);
+        keys_height.css('marginLeft',0);
+        keys_height.css('marginRight', 0);
+        keys_height.css('marginTop', mrgdtr);
+        panels.css('marginLeft',mrgdtr)
+        panels.css('marginBottom', mrgdtr);
+        panel_r.css('marginRight', mrgdtr);
+        panel_r.width(r_width);
+        panel_l.width(l_width);
+        kbrd.width(r_width + l_width + 3 * margin);
+    }
+
+    remove(){
+        let kbrd = $(this.elements.main)
+        let max_width = Number(kbrd.css("max-width").replace('px',""))
+//        console.log(kbrd.css("width").replace('px',""))
+        if (!this.elements.main.classList.contains("keyboard--hidden")) {
+            let element = $('#' + this.properties.element_id);
+            let parent = $('#' + this.properties.parent_id);
+            let top = $(element).offset().top + $(element).outerHeight();
+            let left = $(element).offset().left;
+            let width = kbrd.width();
+            let doc_width = parent.width() - 4;
+            if (width > doc_width){
+                this.resize(doc_width);
+            }
+            else if(width < max_width){
+
+                this.resize(max_width>doc_width ? doc_width : max_width)
+            }
+            width = kbrd.width();
+            if ((left + width) > doc_width){
+                left = doc_width - width;
+            }
+
+            $(this.elements.main).offset({top: top, left: left});
+        }
     }
 
     _createKeys(keyLayout) {
@@ -141,6 +205,7 @@ class Keyboard {
         this.eventHandlers.oninput = oninput;
         this.eventHandlers.onclose = onclose;
         this.elements.main.classList.remove("keyboard--hidden");
+        this.remove();
     }
 
     close() {

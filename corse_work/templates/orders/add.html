@@ -7,7 +7,7 @@
 {% endblock %}
 {% block style %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/Keyboard.css') }}">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 {% endblock %}
 {% block navbar_text %}{{ param['user'].username }}: Создание заказа{% endblock %}
 {% block navbar_buttons %}
@@ -77,9 +77,9 @@
                                 <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" aria-labelledby="heading{{ loop.index }}" data-bs-parent="#accordionProduct">
                                     <div class="accordion-body">
                                         <div class="input-group">
-                                            <label class="input-group-text" for="in_q_{{ product.id }}">Количество</label>
-                                            <input class="use-keyboard-input form-control" autocomplete="off" data-id_button="accordion_button{{ loop.index }}"
-                                                   id="in_q_{{ product.id }}">
+                                            <!--<label class="input-group-text" for="in_q_{#  #}{ product.id }}">Количество</label>-->
+                                            <input class="use-keyboard-input form-control" autocomplete="off" readonly style="background-color: white"
+                                                   data-id_button="accordion_button{{ loop.index }}" id="in_q_{{ product.id }}" placeholder="Количество">
                                         </div>
                                     </div>
                                 </div>
@@ -99,13 +99,10 @@
                             {{ param['user'].username }}: Создание заказа
                         </span>
                         <div>
-                            <a href="{{ url_for('orders_app.new') }}" class="btn btn-danger material-icons" title="Очистить"
-                                       type="button">clear</a>
+                            <button id="nav-order_clear" class="btn btn-danger material-icons" type="button" title="Очистить">clear</button>
                             <button id="nav-order_submit" class="btn btn-primary material-icons" type="button" title="Записать">save</button>
-                            <a href="{{ url_for('orders_app.orders') }}" class="btn btn-secondary material-icons" title="К списку"
-                                       type="button">reply</a>
-                            <a href="{{ url_for('login_app.logout') }}" class="btn btn-secondary material-icons" title="Выход"
-                                       type="button">logout</a>
+                            <button id="nav-order_reply" class="btn btn-secondary material-icons" type="button" title="К списку">reply</button>
+                            <button id="nav-order_logout" class="btn btn-secondary material-icons" type="button" title="Выход">logout</button>
                         </div>
                     </div>
                 </nav>
@@ -176,6 +173,15 @@
             })
 
         })
+        $('#nav-order_clear').on('click', function (){
+            window.location.replace("{{ url_for('orders_app.new') }}")
+        })
+        $('#nav-order_reply').on('click', function (){
+            window.location.replace("{{ url_for('orders_app.orders') }}")
+        })
+        $('#nav-order_logout').on('click', function (){
+            window.location.replace("{{ url_for('login_app.logout') }}")
+        })
         $('#nav-order_submit').on('click', function (){
             let url = "{{ url_for('orders_app.confirm', buyer_id='buyer_id', shop_id='shop_id') }}";
             url = url.replace('buyer_id', $('#input_buyer').attr('data-id')).replace('shop_id',
@@ -193,8 +199,8 @@
         $('#close_product_form').on('click',function (){
             let url = "{{ url_for('orders_app.new') }}";
             let data = JSON.stringify({});
-//            console.log(data)
             let xhr = new XMLHttpRequest();
+            Keyboard_accordion.close();
             Query_POST(xhr, url, data, 'render_products',function () {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                         let str = xhr.responseText
@@ -216,7 +222,7 @@
                     let str = xhr.responseText
                     let fragment = createFragmentFromString(str);
                     $("#form_table_container").replaceWith(fragment);
-                    table_script('Удаление строки')
+                    table_script()
                     }
                 })
             })
@@ -235,7 +241,6 @@
         }
 
         function Query_POST(xhr, url, data, reason, onload){
- //           console.log('POST: ' + url + '  ' + data);
             xhr.open('POST', url, true);
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.setRequestHeader("Reason", reason);
@@ -281,14 +286,9 @@
                 }
             })
         }
-        function table_script (str)
+        function table_script ()
         {
-            console.log(str)
-            console.log('script table')
             Keyboard_table.link_elements();
-            console.log(typeof done_click);
-
-
             $('#table_product>tbody>tr').on('click', function (){
                 $('.table-active').removeClass('table-active');
                 $(this).addClass("table-active");
@@ -296,7 +296,6 @@
         }
 
         let done_click = function () {
-            console.log(Keyboard_table.properties.element_id)
             let id_inp = Keyboard_table.properties.element_id;
             let quant = document.getElementById(id_inp).value
             if (quant === ''){quant = 0}
@@ -317,7 +316,6 @@
                         document.getElementById(id_inp).value = obj.quantity;
                         document.getElementById('sum_' + id_pr).innerHTML = obj.sum;
                     }
-                    console.log(xhr.status);
                 }
             })
         }
@@ -325,7 +323,13 @@
         $('#buyer_list>button.list-group-item').on('click', function (){
             buyer_click($(this).attr('id'));
         })
-
+        window.addEventListener('resize', function(event){
+            Keyboard_accordion.remove();
+            Keyboard_table.remove();
+        });
+        $('#productModal').on('scroll', function(event){
+            Keyboard_accordion.remove();
+        });
     </script>
 {% endblock %}
 {% block script %}

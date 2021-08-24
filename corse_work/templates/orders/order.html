@@ -1,12 +1,25 @@
 {% extends 'orders/base.html' %}
 {% block content %}
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+            <span class="navbar-text">
+                Заказ № {{ order.num }}. Автор: {{ order.user.username }}
+            </span>
+            <div>
+                <button id="btn-reply-orders" class="btn btn-outline-secondary material-icons" title="К списку"
+                        type="button">reply</button>
+                <button id="btn-logout" class="btn btn-outline-secondary material-icons" title="Выход"
+                        type="button">logout</button>
+            </div>
+        </div>
+    </nav>
     <table class="table caption-top">
         <caption>
-            Заказ № {{ order.num }} от {{ order.date }}<br>
+            Дата: {{ order.date }}<br>
             Покупатель: {{ order.buyer.buyer_name }}<br>
             Магазин: {{ order.shop.shop_name }}<br>
             Сумма {{ order.sum }}<br>
-            Автор: {{ order.user.username }}</caption>
+        </caption>
         <thead>
             <tr>
                 <th>№</th>
@@ -28,4 +41,14 @@
             {% endfor %}
         </tbody>
     </table>
+{% endblock %}
+{% block script %}
+    <script>
+        $('#btn-reply-orders').on('click', function() {
+            window.location.replace('{{ url_for('orders_app.orders') }}')
+        })
+        $('#btn-logout').on('click', function() {
+            window.location.replace('{{ url_for('login_app.logout') }}')
+        })
+    </script>
 {% endblock %}

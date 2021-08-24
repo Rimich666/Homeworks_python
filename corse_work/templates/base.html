@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         {% block meta %}{% endblock %}
         <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
         {% block style %}
         {% endblock  %}
@@ -19,9 +20,7 @@
         {% block body %}
         {% endblock %}
         <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-        <script>
-            {% block scripts %}
-            {% endblock %}
-        </script>
+        {% block scripts %}
+        {% endblock %}
     </body>
 </html>

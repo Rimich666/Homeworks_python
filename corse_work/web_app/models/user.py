@@ -7,11 +7,12 @@ from sqlalchemy import (
 from flask_login import UserMixin
 from sqlalchemy.orm import (relationship)
 from .database import db, login
-from ..forms.admin_forms import Templ
+from web_app.forms.admin_forms import Templ
 from werkzeug.security import (
     generate_password_hash,
     check_password_hash
 )
+
 
 @login.user_loader
 def load_user(id):
@@ -24,7 +25,7 @@ class Role(db.Model, Templ):
     role = Column(String(10), unique=True, nullable=False)
     users = relationship('User', back_populates='role')
 
-    def __init__(self, id, role):
+    def __init__(self, id=None, role=''):
         self.id = id
         self.role = role
 
@@ -41,7 +42,9 @@ class User(db.Model, Templ, UserMixin):
     role = relationship('Role', back_populates='users')
     orders = relationship('Order', back_populates='user')
 
-    def __init__(self, id, username, role_id, phone_number):
+    add_templ = "register"
+
+    def __init__(self, id=None, username='', role_id=0, phone_number=''):
         self.id = id
         self.username = username
         self.role_id = role_id
@@ -54,3 +57,4 @@ class User(db.Model, Templ, UserMixin):
         return check_password_hash(self.password_hash, passsword)
 
     pass
+
