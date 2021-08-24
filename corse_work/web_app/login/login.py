@@ -88,11 +88,7 @@ def login():
         login_data['code'] = str(randint(100000, 999999))
         login_data['remb'] = form.remember_me.data
         login_data['fresh'] = True
-<<<<<<< HEAD
-        login_data['remained'] = 300
-=======
-        login_data['remained'] = 10
->>>>>>> 2abd5ca5029c300f51bd59faac5bad555a395b39
+        login_data['remained'] = Config.SMS_TIMEOUT
         if form.send_sms.data:
             sendSMS(login_data['code'])
 
@@ -153,8 +149,8 @@ def register():
         form.phone.render_kw = {'value': '79272123456'}
         return render_template('login/register.html', form=form, choices=choices)
     if form.validate_on_submit():
-        user = User(username='admin', id=1)
-        user.set_password('1')
+        user = User(username=Config.DEF_USER, id=1)
+        user.set_password(Config.DEF_PASSWORD)
         user.role_id = int(form.role.data)
         user.phone_number = Config.PHONE
         db.session.add(user)
