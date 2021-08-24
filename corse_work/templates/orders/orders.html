@@ -3,37 +3,62 @@
     <nav class="navbar navbar-light bg-light">
         <div class="container-fluid">
             <span class="navbar-text">
-                {% block navbar_text %}{% endblock %}
+                Список заказов. Автор: {{ user.username }}
             </span>
-            {% block navbar_buttons %}{% endblock %}
+            <div>
+                <button id="btn-new-order" class="btn btn-outline-success material-icons" title="Новый заказ"
+                                       type="button">add_box</button>
+                <button id="btn-detail" class="btn btn-outline-info material-icons" title="Подробности"
+                                       type="button">source</button>
+                <button id="btn-delete-order" class="btn btn-outline-danger material-icons" title="Удалить"
+                                       type="button">delete_forever</button>
+                <button id="btn-logout" class="btn btn-outline-secondary material-icons" title="Выход"
+                                       type="button">logout</button>
+            </div>
         </div>
     </nav>
 
-    <table class="table caption-top">
-        <caption>Список заказов. Автор: {{ user.username }}</caption>
+    <table class="table caption-top" id="table_orders">
         <thead>
             <tr>
                 <th>Номер</th>
                 <th>Покупатель</th>
                 <th>Сумма</th>
-                <td>
-                    <a href ="{{ url_for('orders_app.new') }}"
-                       type="button" class="btn btn-outline-success">Новый заказ</a>
-                </td>
             </tr>
         </thead>
         <tbody>
             {% for order in orders %}
-                <tr>
+                <tr data-id="{{ order.id }}">
                     <td>{{ order.num }}</td>
                     <td>{{ order.buyer.buyer_name }}</td>
                     <td>{{ order.sum }}</td>
-                    <td>
-                        <a href="{{ url_for('orders_app.order', order_id=order.id) }}"
-                        type="button" class="btn btn-outline-info">Потроха</a>
-                    </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+    {% endblock %}
+    {% block script %}
+        <script>
+            $('#table_orders>tbody>tr').on('click', function (){
+                $('.table-active').removeClass('table-active');
+                $(this).addClass("table-active");
+            })
+
+            $('#btn-new-order').on('click', function() {
+                window.location.replace('{{ url_for('orders_app.new') }}')
+            })
+
+            $('#btn-detail').on('click', function() {
+                let url = "{{ url_for('orders_app.order', order_id='order_id') }}"
+                let order_id = $('.table-active').attr('data-id')
+                if (order_id!==undefined) {
+                    url = url.replace('order_id', order_id)
+                    window.location.replace(url)
+                }
+            })
+            $('#btn-logout').on('click', function() {
+                window.location.replace('{{ url_for('login_app.logout') }}')
+            })
+
+        </script>
     {% endblock %}

@@ -13,6 +13,7 @@ from sqlalchemy.orm import (
 )
 
 from ..forms import Templ
+#from ..admin import Templ
 from .database import db
 from .user import User
 
@@ -57,7 +58,10 @@ class Buyer(db.Model, Templ):
         self.kode = kode
         self.buyer_name = buyer_name
 
-    pass
+    def repr(self, col=''):
+        return self.buyer_name
+
+    headers = {'buyer_name': 'Наименование', 'default': 'Покупатель'}
 
 
 class Shop(db.Model, Templ):
@@ -85,7 +89,8 @@ class Shop(db.Model, Templ):
         self.buyer_id = buyer_id
         self.pt_id = pt_id
 
-    pass
+    relations = {'product_id': 'product', 'pt_id': 'prices_type', 'buyer_id': 'buyer'}
+    headers = {'kode': 'Код', 'shop_name': 'Наименование', 'address': 'Адрес'}
 
 
 class PricesType(db.Model, Templ):
@@ -118,7 +123,6 @@ class Price(db.Model, Templ):
     price_type = relationship('PricesType')
 
     relations = {'product_id': 'product', 'pt_id': 'price_type'}
-
     headers = {'date': 'Дата установки', 'price': 'Цена'}
 
     def __init__(self, id, product_id, date, pt_id, price):
