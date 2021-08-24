@@ -88,7 +88,11 @@ def login():
         login_data['code'] = str(randint(100000, 999999))
         login_data['remb'] = form.remember_me.data
         login_data['fresh'] = True
+<<<<<<< HEAD
         login_data['remained'] = 300
+=======
+        login_data['remained'] = 10
+>>>>>>> 2abd5ca5029c300f51bd59faac5bad555a395b39
         if form.send_sms.data:
             sendSMS(login_data['code'])
 
